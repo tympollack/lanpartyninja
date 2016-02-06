@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html ng-app="LanPartyNinjaApp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="LanParty.Ninja">
+    <meta name="author" content="Tym Pollack">
+    <!--<link rel="icon" href="../../favicon.ico">-->
+
+    <title>LanParty.Ninja</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link href="css/style.css" rel="stylesheet">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+    <script src='https://cdn.firebase.com/js/client/2.4.0/firebase.js'></script>
+    <script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.1.1/ui-bootstrap.min.js"></script>
+    <script src="js/smart-table.min.js"></script>
+    <script src="js/app.js"></script>
+  </head>
+
+  <body ng-controller="MainController">
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Lan Party Ninja</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="starter-template">
+        <h1>Find or Add a Game</h1>
+      </div>
+      
+      <div>
+        <button id="btnAdd" class="btn btn-default" data-toggle="collapse" data-target="#addGame" ng-click="toggleAddBtn()">
+            <span ng-bind="addBtnTxt"></span>
+        </button>
+        <div id="addGame" class="collapse well well-lg">
+          <form name="addGameForm">
+            <div class="form-group has-feedback" ng-class="{ 'has-error': addGameForm.title.$touched && addGameForm.title.$invalid, 'has-success': addGameForm.title.$valid }">
+              <label class="control-label" for="title">Title</label>
+              <input type="text" ng-model="entry.title" class="form-control" name="title" placeholder="Title" required>
+              <span class="form-control-feedback glyphicon" ng-class="{ 'glyphicon-remove': addGameForm.title.$touched && addGameForm.title.$invalid, 'glyphicon-ok': addGameForm.title.$valid }" aria-hidden="true"></span>
+            </div>
+            <div class="form-inline three-columns">
+              <div class="input-group has-feedback" ng-class="{ 'has-error': addGameForm.genre.$touched && addGameForm.genre.$invalid, 'has-success': addGameForm.genre.$valid }">
+                <span class="input-group-addon">Genre</span>
+                <input type="text" ng-model="entry.genre" class="form-control" name="genre" required>
+                <span class="form-control-feedback glyphicon" ng-class="{ 'glyphicon-remove': addGameForm.genre.$touched && addGameForm.genre.$invalid, 'glyphicon-ok': addGameForm.genre.$valid }" aria-hidden="true"></span>
+              </div>
+              <div class="input-group has-feedback" ng-class="{ 'has-error': addGameForm.maxPlayers.$touched && addGameForm.maxPlayers.$invalid, 'has-success': addGameForm.maxPlayers.$valid }">
+                <span class="input-group-addon">Max Players</span>
+                <input type="number" ng-maxlength="3" ng-model="entry.maxPlayers" class="form-control" name="maxPlayers" required>
+                <span class="form-control-feedback glyphicon" ng-class="{ 'glyphicon-remove': addGameForm.maxPlayers.$touched && addGameForm.maxPlayers.$invalid, 'glyphicon-ok': addGameForm.maxPlayers.$valid }" aria-hidden="true"></span>
+              </div>
+              <div class="input-group has-feedback" ng-class="{ 'has-error': addGameForm.maxParty.$touched && addGameForm.maxParty.$invalid, 'has-success': addGameForm.maxParty.$valid }">
+                <span class="input-group-addon">Max Party Size</span>
+                <input type="number" ng-maxlength="3" ng-model="entry.maxParty" class="form-control" name="maxParty" required>
+                <span class="form-control-feedback glyphicon" ng-class="{ 'glyphicon-remove': addGameForm.maxParty.$touched && addGameForm.maxParty.$invalid, 'glyphicon-ok': addGameForm.maxParty.$valid }" aria-hidden="true"></span>
+              </div>
+            </div>
+            <div class="form-inline three-columns">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="entry.isOnline" ng-true-value="'Yes'" ng-false-value="'No'"> Online MP
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="entry.isOffline" ng-true-value="'Yes'" ng-false-value="'No'"> Offline MP
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="entry.isFree" ng-true-value="'Yes'" ng-false-value="'No'"> Free-to-Play
+                </label>
+              </div>
+            </div>
+            <div class="form-group has-feedback" ng-class="{ 'has-error': addGameForm.platform.$touched && addGameForm.platform.$invalid, 'has-success': addGameForm.platform.$valid }">
+              <label class="control-label" for="platform">Platform (Steam, Origin, etc.)</label>
+              <input type="text" ng-model="entry.platform" class="form-control" name="platform" required>
+              <span class="form-control-feedback glyphicon" ng-class="{ 'glyphicon-remove': addGameForm.platform.$touched && addGameForm.platform.$invalid, 'glyphicon-ok': addGameForm.platform.$valid }" aria-hidden="true"></span>
+            </div>
+            <div class="form-group">
+              <label class="control-label" for="comments">Comments</label>
+              <input type="text" ng-model="entry.comments" class="form-control" name="comments">
+            </div>
+            <button id="btnSubmit" ng-click="addGame()" class="btn btn-default">Submit</button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="game-list">
+        <table st-safe-src="rowCollection" st-table="displayCollection" st-set-filter="customFilter" class="table table-striped">
+        	<thead>
+          	<tr>
+          		<th st-sort="title" st-skip-natural="true" st-sort-default="true">Title</th>
+          		<th st-sort="genre" st-skip-natural="true">Genre</th>
+          		<th st-sort="maxPlayers" st-skip-natural="true">Max Players</th>
+          		<th st-sort="maxParty" st-skip-natural="true">Max Party</th>
+          		<th st-sort="online" st-skip-natural="true">Online</th>
+          		<th st-sort="offline" st-skip-natural="true">Offline</th>
+          		<th st-sort="free" st-skip-natural="true">F2P</th>
+          		<th st-sort="platform" st-skip-natural="true">Platform</th>
+          		<th>Comments</th>
+          	</tr>
+          	<tr>
+          	  <th>
+          	    <input st-search="title" placeholder="title contains" class="input-sm form-control" type="search">
+          	  </th>
+          	  <th>
+          	    <select st-search="genre" class="input-sm form-control">
+                    <option value="">Any</option>
+                    <option ng-repeat="row in displayCollection | unique:'genre'" value="{{row.genre}}">{{row.genre}}</option>
+                </select>
+          	  </th>
+          	   <th>
+          	    <st-number-range predicate="maxPlayers" lower="maxPlayers.lower" higher="maxPlayers.higher"></st-number-range>
+          	  </th>
+          	   <th>
+          	    <st-number-range predicate="maxParty" lower="maxParty.lower" higher="maxParty.higher"></st-number-range>
+          	  </th>
+          	   <th>
+          	    <select st-search="online" class="input-sm form-control">
+                    <option value="">Any</option>
+                    <option ng-repeat="row in displayCollection | unique:'online'" value="{{row.online}}">{{row.online}}</option>
+                </select>
+          	  </th>
+          	   <th>
+          	    <select st-search="offline" class="input-sm form-control">
+                    <option value="">Any</option>
+                    <option ng-repeat="row in displayCollection | unique:'offline'" value="{{row.offline}}">{{row.offline}}</option>
+                </select>
+          	  </th>
+          	   <th>
+          	    <select st-search="free" class="input-sm form-control">
+                    <option value="">Any</option>
+                    <option ng-repeat="row in displayCollection | unique:'free'" value="{{row.free}}">{{row.free}}</option>
+                </select>
+          	  </th>
+          	   <th>
+          	    <select st-search="platform" class="input-sm form-control">
+                    <option value="">Any</option>
+                    <option ng-repeat="row in displayCollection | unique:'platform'" value="{{row.platform}}">{{row.platform}}</option>
+                </select>
+          	  </th>
+          	   <th>
+          	    <input st-search="comments" placeholder="comment comtains" class="input-sm form-control" type="search"/>
+          	  </th>
+          	</tr>
+        	</thead>
+        	<tbody>
+          	<tr ng-repeat="row in displayCollection">
+          		<td>{{row.title}}</td>
+          		<td>{{row.genre}}</td>
+          		<td>{{row.maxPlayers}}</td>
+          		<td>{{row.maxParty}}</td>
+          		<td>{{row.online}}</td>
+          		<td>{{row.offline}}</td>
+          		<td>{{row.free}}</td>
+          		<td>{{row.platform}}</td>
+          		<td>{{row.comments}}</td>
+          	</tr>
+        	</tbody>
+        </table>
+      </div>
+
+    </div><!-- /.container -->
+    
+  </body>
+</html>

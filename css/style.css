@@ -1,0 +1,45 @@
+body {
+  padding-top: 50px;
+}
+
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.game-list {
+  margin-top: 25px;
+}
+
+.btn:focus {
+  outline: none;
+}
+
+.st-sort-ascent:before{
+  content: '\25B2';
+}
+
+.st-sort-descent:before{
+  content: '\25BC';
+}
+
+.narrow {
+  max-width: 120px;
+}
+
+.table thead tr th {
+  vertical-align: top;
+}
+
+@media (min-width: 768px) {
+  
+  .form-inline {
+    margin-bottom: 15px;
+  }
+  
+  .three-columns div {
+    width: 30%;
+    margin-right: 2%;
+  }
+  
+}
