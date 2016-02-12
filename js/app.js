@@ -1,5 +1,5 @@
 /*global angular, Firebase*/
-var app = angular.module('LanPartyNinjaApp', ['firebase', 'smart-table', 'ui.bootstrap']);
+var app = angular.module('LanPartyNinjaApp', ['firebase', 'smart-table', 'xeditable', 'ui.bootstrap']);
 
 app.controller('MainController', ['$scope', '$filter', '$firebaseArray', function($scope, $filter, $firebaseArray) {
     var ref = new Firebase('https://lpn.firebaseio.com/');
@@ -54,6 +54,10 @@ app.controller('MainController', ['$scope', '$filter', '$firebaseArray', functio
     var clearAddForm = function() {
         $scope.addGameForm.$setUntouched();
         angular.copy(blankEntry, $scope.entry);
+    };
+    
+    $scope.saveNewTableVal = function(row) {
+        $scope.rowCollection.$save(row);
     };
 }]);
 
