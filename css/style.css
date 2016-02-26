@@ -36,6 +36,13 @@ td .editable-click, a.editable-click {
   border-bottom: none;
 }
 
+#ad-top {
+  width: 75%;
+  height: 50px;
+  margin: 0 auto;
+  padding: 10px 0;
+}
+
 @media (min-width: 768px) {
   
   .form-inline {
